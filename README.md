@@ -1,212 +1,267 @@
-🌱 Optimal Sensor Placement UI
+# 🌱 Optimal Sensor Placement UI
 
-This repository contains the Streamlit-based user interface developed for the Optimal Sensor Placement and Forecasting using Machine Learning project.
+This repository contains the Streamlit-based UI developed for the Optimal Sensor Placement and Forecasting using Machine Learning project.
 
 The application performs:
+- Data validation
+- Spatial interpolation
+- Feature extraction
+- PCA-based dimensionality reduction
+- K-Means clustering
+- Optimal sensor placement visualization
+- Download of optimized sensor coordinates
 
-* Data validation
-* Spatial grid generation
-* Kriging interpolation
-* Feature extraction
-* PCA-based dimensionality reduction
-* K-Means clustering
-* Optimal sensor placement visualization
-* Download of optimized sensor coordinates
+---
 
-⸻
+# 📂 Project Structure
 
-📌 Features
+## `app.py`
+Main Streamlit application file.
 
-* Upload field boundary, sensor coordinates, and sensor time-series data
-* Validate sensor consistency and field boundary constraints
-* Generate spatial field grids automatically
-* Perform Kriging interpolation for microclimate reconstruction
-* Determine optimal number of clusters using:
-    * Silhouette Score
-    * Davies–Bouldin Score
-    * Elbow Method (Inertia)
-* Visualize:
-    * Initial sensor placement
-    * Cluster evaluation plots
-    * Final optimal sensor placement map
-* Download optimized sensor coordinates as CSV
+Responsibilities:
+- Handles file uploads
+- Displays UI components
+- Executes the complete optimization pipeline
+- Displays visualizations and outputs
+- Provides CSV download functionality
 
-⸻
+---
 
-📂 Required Input Files
+## `validation.py`
+Used for validating uploaded datasets.
 
-1. field_boundary.csv
+Responsibilities:
+- Verifies sensor count
+- Matches sensor IDs across files
+- Checks whether all sensors lie inside the field boundary polygon
+
+---
+
+## `grid.py`
+Used for spatial grid generation.
+
+Responsibilities:
+- Creates spatial grid over the agricultural field
+- Converts meter resolution into latitude/longitude spacing
+- Generates polygon mask to retain only valid field points
+
+---
+
+## `interpolation.py`
+Used for Kriging interpolation.
+
+Responsibilities:
+- Performs spatial interpolation on sensor observations
+- Reconstructs continuous field-wide temperature and humidity maps
+- Generates interpolated feature stacks
+
+---
+
+## `cell_features.py`
+Used for statistical feature extraction.
+
+Responsibilities:
+- Computes:
+  - Mean
+  - Standard deviation
+  - Range
+- Extracts feature vectors for every grid cell
+
+---
+
+## `dimensionality.py`
+Used for dimensionality reduction.
+
+Responsibilities:
+- Standardizes extracted features
+- Applies PCA to reduce feature dimensionality while preserving variance
+
+---
+
+## `clustering.py`
+Used for clustering and cluster evaluation.
+
+Responsibilities:
+- Performs K-Means clustering
+- Evaluates optimal K using:
+  - Silhouette Score
+  - Davies–Bouldin Score
+  - Inertia (Elbow Method)
+- Automatically selects optimal cluster count
+
+---
+
+## `sensor_selection.py`
+Used for optimal sensor placement.
+
+Responsibilities:
+- Identifies representative sensor locations from clusters
+- Selects centroid positions from dominant cluster regions
+- Generates final optimized sensor coordinates
+
+---
+
+# 📂 Required Input Files
+
+## 1. `field_boundary.csv`
 
 Contains field boundary coordinates in sequential polygon order.
 
 Example:
 
-latitude	longitude
-45.3921	9.6962
-45.3924	9.6968
+| latitude | longitude |
+|---|---|
+| 45.3921 | 9.6962 |
+| 45.3924 | 9.6968 |
 
-⸻
+---
 
-2. sensor_coordinates.csv
+## 2. `sensor_coordinates.csv`
 
 Contains deployed sensor coordinates.
 
 Example:
 
-sensor_id	latitude	longitude
-1	45.3918	9.6965
+| sensor_id | latitude | longitude |
+|---|---|---|
+| 1 | 45.3918 | 9.6965 |
 
-⸻
+---
 
-3. sensor_hourly.csv
+## 3. `sensor_hourly.csv`
 
 Contains hourly sensor observations.
 
 Example:
 
-sensor_id	timestamp	temperature	humidity
-1	2024-01-01 00:00	12.3	78.2
+| sensor_id | timestamp | temperature | humidity |
+|---|---|---|---|
+| 1 | 2024-01-01 00:00 | 12.3 | 78.2 |
 
-⸻
+---
 
-🛠️ Libraries Used
+# 🛠️ Libraries Used
 
-The following Python libraries were used in this project:
+## Core Libraries
+- numpy
+- pandas
+- matplotlib
+- seaborn
 
-Core Libraries
+## Machine Learning
+- scikit-learn
 
-* numpy
-* pandas
-* matplotlib
-* seaborn
+## Spatial Processing
+- shapely
+- pykrige
+- scipy
 
-Machine Learning
+## UI Development
+- streamlit
 
-* scikit-learn
+---
 
-Spatial Processing
+# ⚙️ Setup Process
 
-* shapely
-* pykrige
-* scipy
+## Step 1: Clone Repository
 
-UI Development
-
-* streamlit
-
-⸻
-
-⚙️ Setup Process
-
-Step 1: Clone Repository
-
+```bash
 git clone https://github.com/nayan0413/Optimal-Sensor-Placement-and-Forecasting-using-Machine-Learning.git
+```
 
-⸻
+---
 
-Step 2: Navigate to UI Folder
+## Step 2: Navigate to UI Folder
 
+```bash
 cd Optimal-Sensor-Placement-and-Forecasting-using-Machine-Learning/ui
+```
 
-⸻
+---
 
-Step 3: Create Virtual Environment (Optional but Recommended)
+## Step 3: Create Virtual Environment (Optional but Recommended)
 
-Windows
+### Windows
 
+```bash
 python -m venv venv
 venv\Scripts\activate
+```
 
-Linux / Mac
+### Linux / Mac
 
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
-⸻
+---
 
-Step 4: Install Dependencies
+## Step 4: Install Dependencies
 
+```bash
 pip install -r requirements.txt
+```
 
-If requirements.txt is not available, install manually:
+If `requirements.txt` is not available, install manually:
 
+```bash
 pip install streamlit numpy pandas matplotlib seaborn scikit-learn shapely pykrige scipy
+```
 
-⸻
+---
 
-▶️ Running the Application
+# ▶️ Running the Application
 
 Run the Streamlit application using:
 
+```bash
 streamlit run app.py
+```
 
 The application will open automatically in your browser.
 
-⸻
+---
 
-📊 Workflow of the UI
-
-1. Upload field boundary, sensor coordinates, and sensor data
-2. Validate uploaded datasets
-3. Generate spatial field grid
-4. Perform Kriging interpolation
-5. Extract statistical features
-6. Apply PCA for dimensionality reduction
-7. Evaluate optimal K using clustering metrics
-8. Perform K-Means clustering
-9. Determine optimal sensor locations
-10. Visualize results and download optimized coordinates
-
-⸻
-
-📈 Clustering Metrics Used
-
-The optimal number of clusters is determined using:
-
-* Silhouette Score
-* Davies–Bouldin Index
-* Inertia (Elbow Method)
-
-A combined normalized score is used for automatic K selection.
-
-⸻
-
-🗺️ Output Visualizations
+# 🗺️ Output Visualizations
 
 The UI generates:
+- Initial sensor placement map
+- Cluster evaluation plots
+- Final clustered field map
+- Optimal sensor placement map
 
-* Initial sensor placement map
-* Cluster evaluation plots
-* Final clustered field map
-* Optimal sensor placement map
+---
 
-⸻
-
-📥 Output Files
+# 📥 Output Files
 
 The final optimized sensor coordinates can be downloaded as:
 
+```text
 optimal_sensor_coordinates.csv
+```
 
-⸻
+---
 
-🚀 Future Improvements
+# 🚀 Future Improvements
 
-* Integrating Google Maps/OpenStreetMap-based field boundary drawing
-* Real-time sensor data streaming
-* Forecasting integration directly into the UI
-* Support for additional environmental variables
-* Interactive GIS-based visualization
+- Integrating Google Maps/OpenStreetMap-based field boundary drawing
+- Real-time sensor data streaming
+- Forecasting integration directly into the UI
+- Support for additional environmental variables
+- Interactive GIS-based visualization
 
-⸻
+---
 
-👨‍💻 Authors
+# 👨‍💻 Authors
 
-* Nayan Singhania
-* Project Team
+- Nayan Singhania (BT22ECE115)
+- Prasanna Athawale (BT22ECE023)
+- Anjal Mallick (BT22ECE113)
+- Yash Rahate (BT22ECE007)
 
-⸻
+---
 
-🔗 GitHub Repository
+# 🔗 GitHub Repository
 
 https://github.com/nayan0413/Optimal-Sensor-Placement-and-Forecasting-using-Machine-Learning
